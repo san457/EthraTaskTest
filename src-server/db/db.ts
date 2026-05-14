@@ -2,12 +2,10 @@ import pkg from 'pg';
 import dotenv from 'dotenv';
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
 
 dotenv.config();
 
 const { Client } = pkg;
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const client = new Client({
   connectionString: process.env.DATABASE_URL,
