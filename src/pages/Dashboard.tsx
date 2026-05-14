@@ -3,6 +3,12 @@ import { useAppContext } from "@/context/context";
 import { useNavigate } from "react-router-dom";
 import api from "@/lib/api";
 
+declare global {
+  interface Window {
+    fetchStats?: () => void;
+  }
+}
+
 export default function Dashboard() {
     const navigate = useNavigate();
     const { isAuthenticated, user } = useAppContext()
@@ -29,7 +35,10 @@ export default function Dashboard() {
 
         if (isAuthenticated) {
             fetchStats();
+            window.fetchStats = fetchStats;
         }
+
+        return () => { window.fetchStats = undefined; };
     }, [isAuthenticated]);
 
 

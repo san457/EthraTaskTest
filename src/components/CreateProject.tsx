@@ -32,6 +32,7 @@ export function CreateProjectDialog() {
       setDescription("")
       SetProjectOpen(false) 
       window.fetchProjects?.();
+      window.fetchStats?.();
     } catch (err: any) {
       console.error(err)
     } finally {

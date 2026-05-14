@@ -24,8 +24,8 @@ export const memberSchema = z.object({
 export const taskSchema = z.object({
   title: z.string().min(1),
   description: z.string().optional(),
-  projectId: z.number(),
+  projectId: z.coerce.number(),
   priority: z.enum(['low', 'medium', 'high']).default('medium'),
-  assigneeId: z.number().nullable().optional(),
+  assigneeId: z.coerce.number().nullable().optional(),
   dueDate: z.string().datetime().nullable().optional(),
 });
