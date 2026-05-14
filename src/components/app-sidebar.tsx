@@ -19,6 +19,7 @@ import {
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import { useAppContext } from "@/context/context";
 import { logout } from "@/methods/logout";
+import { Link } from "react-router-dom";
 
 export function DashboardSidebar() {
   const { user, setUser, setIsAuthenticated } = useAppContext();
@@ -87,10 +88,10 @@ export function DashboardSidebar() {
                     <span>{item.title}</span>
                   </div>
                 ) : (
-                  <a href={item.href} className="flex items-center space-x-3 px-3 py-2">
+                  <Link to={item.href!} className="flex items-center space-x-3 px-3 py-2">
                     <item.icon className="h-4 w-4" />
                     <span>{item.title}</span>
-                  </a>
+                  </Link>
                 )}
               </SidebarMenuButton>
             </SidebarMenuItem>
