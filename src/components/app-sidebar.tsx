@@ -22,7 +22,7 @@ import { logout } from "@/methods/logout";
 import { Link } from "react-router-dom";
 
 export function DashboardSidebar() {
-  const { user, setUser, setIsAuthenticated } = useAppContext();
+  const { user, setUser, setIsAuthenticated, SetSelectProject } = useAppContext();
   const firstLetter = user?.name?.charAt(0)?.toUpperCase() || "U";
   const fullName = user?.name || "Unknown User";
 
@@ -88,7 +88,15 @@ export function DashboardSidebar() {
                     <span>{item.title}</span>
                   </div>
                 ) : (
-                  <Link to={item.href!} className="flex items-center space-x-3 px-3 py-2">
+                  <Link 
+                    to={item.href!} 
+                    className="flex items-center space-x-3 px-3 py-2"
+                    onClick={() => {
+                      if (item.title === "Tasks" || item.title === "Dashboard") {
+                        SetSelectProject(null);
+                      }
+                    }}
+                  >
                     <item.icon className="h-4 w-4" />
                     <span>{item.title}</span>
                   </Link>
