@@ -66,31 +66,6 @@ Railway runs `npm run build` on deploy and `npm start` to boot the server. The d
 
 ---
 
-## Project structure
-
-```
-/client
-  /src
-    /api          axios instance + all API calls
-    /components   shared UI components
-    /pages        one file per route
-    /store        auth state (Zustand)
-    /types        TypeScript interfaces
-    /utils        helpers, date formatting, etc.
-
-/server
-  /src
-    /controllers  request handlers
-    /middleware   auth guard, role guard, error handler
-    /routes       Express routers
-    /services     database queries
-    /validators   Zod schemas
-
-  prisma/
-    schema.prisma
-```
-
----
 
 ## Auth
 
