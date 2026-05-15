@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -16,48 +16,43 @@ export function TasksContainer() {
   const [filteredTasks, setFilteredTasks] = useState<any[]>([]);
   const [activeFilter, setActiveFilter] = useState("All");
 
-  const refreshTasks = async () => {
+  const applyFilter = useCallback((filter: string, taskList: any[]) => {
+    setActiveFilter(filter);
+    if (filter === "To Do") {
+      setFilteredTasks(taskList.filter((t) => t.status === 'todo'));
+    } else if (filter === "In Progress") {
+      setFilteredTasks(taskList.filter((t) => t.status === 'in_progress'));
+    } else if (filter === "Completed") {
+      setFilteredTasks(taskList.filter((t) => t.status === 'completed'));
+    } else {
+      setFilteredTasks(taskList);
+    }
+  }, []);
+
+  const refreshTasks = useCallback(async () => {
     try {
       setLoading(true);
-      const url = SelectProject 
-        ? `/tasks/project/${SelectProject.id}` 
+      const url = SelectProject
+        ? `/tasks/project/${SelectProject.id}`
         : '/tasks/me';
-      
       const res = await api.get(url);
       const allTasks = res.data.tasks || [];
       setTasks(allTasks);
-      applyFilter(activeFilter, allTasks); 
+      setFilteredTasks(allTasks);
     } catch (err) {
       console.error("Failed to fetch tasks", err);
     } finally {
       setLoading(false);
     }
-  };
-
-
-
-  const applyFilter = (filter: string, taskList: any[] = tasks) => {
-    setActiveFilter(filter);
-
-    let filtered = taskList;
-
-    if (filter === "To Do") {
-      filtered = taskList.filter((t) => t.status === 'todo');
-    } else if (filter === "In Progress") {
-      filtered = taskList.filter((t) => t.status === 'in_progress');
-    } else if (filter === "Completed") {
-      filtered = taskList.filter((t) => t.status === 'completed');
-    }
-
-    setFilteredTasks(filtered);
-  };
-
-  useEffect(() => {
-    refreshTasks();
   }, [SelectProject]);
 
   useEffect(() => {
+    refreshTasks();
+  }, [refreshTasks]);
+
+  useEffect(() => {
     window.refreshTasks = refreshTasks;
+    return () => { window.refreshTasks = undefined; };
   }, [refreshTasks]);
 
   return (
@@ -87,16 +82,16 @@ export function TasksContainer() {
       </Button>
     </DropdownMenuTrigger>
     <DropdownMenuContent align="end">
-      <DropdownMenuItem onClick={() => applyFilter("All")}>
+      <DropdownMenuItem onClick={() => applyFilter("All", tasks)}>
         All Tasks
       </DropdownMenuItem>
-      <DropdownMenuItem onClick={() => applyFilter("To Do")}>
+      <DropdownMenuItem onClick={() => applyFilter("To Do", tasks)}>
         To Do
       </DropdownMenuItem>
-      <DropdownMenuItem onClick={() => applyFilter("In Progress")}>
+      <DropdownMenuItem onClick={() => applyFilter("In Progress", tasks)}>
         In Progress
       </DropdownMenuItem>
-      <DropdownMenuItem onClick={() => applyFilter("Completed")}>
+      <DropdownMenuItem onClick={() => applyFilter("Completed", tasks)}>
         Completed
       </DropdownMenuItem>
     </DropdownMenuContent>
