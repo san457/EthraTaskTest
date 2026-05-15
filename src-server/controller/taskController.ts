@@ -45,16 +45,30 @@ export const getTasks = async (req: Request, res: Response): Promise<void> => {
 
 
   try {
+    const userId = req.user?.userId;
+    const { projectId } = req.params;
+
+    if (!projectId) {
+      res.status(400).json({ message: "projectId is required" });
+      return;
+    }
+
+    const numericProjectId = parseInt(projectId as string);
+    if (isNaN(numericProjectId)) {
+      res.status(400).json({ message: "Invalid projectId" });
+      return;
+    }
+
     const result = await client.query(
       `SELECT * FROM tasks WHERE project_id = $1 ORDER BY created_at DESC`,
-      [projectId]
+      [numericProjectId]
     );
 
     res.status(200).json({ tasks: result.rows });
     return;
-  } catch (error) {
-    console.error("Get Tasks Error:", error);
-    res.status(500).json({ message: "Failed to fetch tasks" });
+  } catch (error: any) {
+    console.error("Get Projects Tasks Error:", error.message);
+    res.status(500).json({ message: "Failed to fetch tasks: " + error.message });
     return;
   }
 };
