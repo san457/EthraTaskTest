@@ -9,8 +9,8 @@ export const isProjectAdmin = async (req: Request, res: Response, next: NextFunc
       return;
     }
 
-    let projectIdRaw = req.params.projectId || req.body.projectId || req.query.projectId;
-    const taskIdRaw = req.params.taskId || req.body.taskId || req.query.taskId;
+    let projectIdRaw = req.params?.projectId || req.body?.projectId || req.query?.projectId;
+    const taskIdRaw = req.params?.taskId || req.body?.taskId || req.query?.taskId;
 
     let projectId: number | undefined;
 
@@ -59,8 +59,8 @@ export const isProjectMember = async (req: Request, res: Response, next: NextFun
       return;
     }
 
-    let projectIdRaw = req.params.projectId || req.body.projectId || req.query.projectId;
-    const taskIdRaw = req.params.taskId || req.body.taskId || req.query.taskId;
+    let projectIdRaw = req.params?.projectId || req.body?.projectId || req.query?.projectId;
+    const taskIdRaw = req.params?.taskId || req.body?.taskId || req.query?.taskId;
 
     let projectId: number | undefined;
 
@@ -115,8 +115,8 @@ export const isProjectMember = async (req: Request, res: Response, next: NextFun
 
 export const protectLastAdmin = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const projectIdRaw = req.body.projectId;
-    const userIdToRemoveRaw = req.body.userIdToRemove;
+    const projectIdRaw = req.body?.projectId;
+    const userIdToRemoveRaw = req.body?.userIdToRemove;
 
     if (!projectIdRaw || !userIdToRemoveRaw) {
       res.status(400).json({ message: 'Project ID and User ID to remove are required' });

@@ -75,9 +75,20 @@ export const getTasks = async (req: Request, res: Response): Promise<void> => {
 
 export const updateTask = async (req: Request, res: Response): Promise<void> => {
     // Basic implementation, can be expanded to use Zod for partial updates
-  const { taskId, title, description, status, priority, assigneeId, dueDate } = req.body;
+  const { taskId, title, description, status, priority, assigneeId, dueDate } = req.body || {};
 
   try {
+    if (!taskId) {
+      res.status(400).json({ message: "taskId is required" });
+      return;
+    }
+
+    const numericTaskId = parseInt(taskId as string);
+    if (isNaN(numericTaskId)) {
+      res.status(400).json({ message: "Invalid taskId" });
+      return;
+    }
+
     const result = await client.query(
       `UPDATE tasks 
        SET title = COALESCE($1, title), 
@@ -87,7 +98,7 @@ export const updateTask = async (req: Request, res: Response): Promise<void> => 
            assignee_id = COALESCE($5, assignee_id),
            due_date = COALESCE($6, due_date)
        WHERE id = $7 RETURNING *`,
-      [title, description, status, priority, assigneeId, dueDate, taskId]
+      [title, description, status, priority, assigneeId, dueDate, numericTaskId]
     );
 
     res.status(200).json({ task: result.rows[0] });
@@ -98,10 +109,21 @@ export const updateTask = async (req: Request, res: Response): Promise<void> => 
 };
 
 export const deleteTask = async (req: Request, res: Response): Promise<void> => {
-  const { taskId } = req.body;
+  const { taskId } = req.body || {};
 
   try {
-    await client.query(`DELETE FROM tasks WHERE id = $1`, [taskId]);
+    if (!taskId) {
+      res.status(400).json({ message: "taskId is required" });
+      return;
+    }
+
+    const numericTaskId = parseInt(taskId as string);
+    if (isNaN(numericTaskId)) {
+      res.status(400).json({ message: "Invalid taskId" });
+      return;
+    }
+
+    await client.query(`DELETE FROM tasks WHERE id = $1`, [numericTaskId]);
     res.status(200).json({ message: "Task deleted successfully" });
   } catch (error) {
     console.error("Delete Task Error:", error);
