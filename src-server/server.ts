@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import cookieParser from 'cookie-parser';
 import http from 'http';
 import cors from 'cors';
@@ -40,6 +40,12 @@ app.use(express.static(frontendPath));
 
 app.use((req: Request, res: Response) => {
   res.sendFile(path.join(frontendPath, 'index.html'));
+});
+
+// Global error handler - logs actual error to Railway and returns JSON
+app.use((err: any, req: Request, res: Response, _next: NextFunction) => {
+  console.error('Unhandled server error:', err?.message || err, err?.stack);
+  res.status(500).json({ message: err?.message || 'Internal server error' });
 });
 
 async function startServer() {
